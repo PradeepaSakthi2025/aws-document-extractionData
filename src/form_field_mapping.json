@@ -1,0 +1,18 @@
+{
+  "firstName": {
+    "label": "First Name",
+    "placeholder": "Enter your first name"
+  },
+  "lastName": {
+    "label": "Last Name",
+    "placeholder": "Enter your last name"
+  },
+  "email": {
+    "label": "Email Address",
+    "placeholder": "Enter your email"
+  },
+  "phone": {
+    "label": "Phone Number",
+    "placeholder": "Enter your phone number"
+  }
+}
