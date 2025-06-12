@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+import jsonData from '../dummyData.json'
 
 interface UploadFileProps {
-  onSubmit: (jsonData: any, imageUrl: string) => void;
+  onSubmit: ({jsonData, imageUrl}:any) => void;
 }
 
 const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
@@ -11,7 +12,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+ 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -53,36 +54,11 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
   const handleSubmit = () => {
     if (!file || !isUploaded) return;
 
-    // Simulated extracted JSON data
-    const extractedData = {
-      keyValuePairs: {
-        FIRST_NAME: "GARCIA",
-        LAST_NAME: "MARIA",
-        MIDDLE_NAME: "N/A",
-        SUFFIX: "N/A",
-        CITY_IN_ADDRESS: "BIGTOWN",
-        ZIP_CODE_IN_ADDRESS: "02801",
-        STATE_IN_ADDRESS: "MA",
-        STATE_NAME: "MASSACHUSETTS",
-        DOCUMENT_NUMBER: "736HDV7874JSB",
-        EXPIRATION_DATE: "01/20/2028",
-        DATE_OF_BIRTH: "03/18/2001",
-        DATE_OF_ISSUE: "03/18/2018",
-        ID_TYPE: "DRIVER LICENSE FRONT",
-        ENDORSEMENTS: "NONE",
-        VETERAN: "N/A",
-        RESTRICTIONS: "NONE",
-        CLASS: "D",
-        ADDRESS: "100 MARKET STREET",
-        COUNTY: "N/A",
-        PLACE_OF_BIRTH: "N/A",
-        MRZ_CODE: "N/A"
-      },
-      tables: []
-    };
-
     const imageUrl = URL.createObjectURL(file);
-    onSubmit(extractedData, imageUrl);
+    const fileData = file;
+
+    onSubmit({data: jsonData, imageUrl ,fileData});
+    console.log("File submitted:", file, "Image URL:", imageUrl , fileData);
   };
 
   return (

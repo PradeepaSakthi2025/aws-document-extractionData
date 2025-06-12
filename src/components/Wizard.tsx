@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import UploadFile from "./UploadFile";
+import dummyData from "../dummyData.json";
+import ShowData from "./ShowData";
 
 interface ExtractedData {
   [key: string]: any;
@@ -10,11 +12,23 @@ export default function Wizard() {
   const [uploadComplete, setUploadComplete] = useState(false);
   const [formData, setFormData] = useState<ExtractedData>({});
   const [ uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [jsonData, setJsonData] = useState<any>(dummyData);
+  const [fileData, setFileData] = useState<File | null>(null);
 
-  const handleComplete = (data: ExtractedData) => {
+  interface HandleCompleteParams {
+    data: ExtractedData;
+    imageUrl?: string | null;
+    fileInfo?:  object | null;
+  }
+
+  const handleComplete = ({ data, imageUrl , fileInfo}: HandleCompleteParams) => {
     setFormData(data);
     setUploadComplete(true);
+    setUploadedImageUrl(imageUrl || null); // Ensure imageUrl is set
     setActiveTab(2);
+    //setFileData(fileInfo instanceof File ? fileInfo : null); // Store the file data if needed
+    //setJsonData(data); // Update jsonData with the extracted data
+    console.log("Form Data:", data,imageUrl, "File Data:", fileInfo);
   };
 
   return (
@@ -25,12 +39,12 @@ export default function Wizard() {
           className={`flex-1 py-3 text-center ${activeTab === 1 ? 'border-b-2 border-blue-600 font-semibold' : 'text-gray-500'}`}
           onClick={() => setActiveTab(1)}
         >
-          Upload
+          Upload Image
         </button>
         <button
           className={`flex-1 py-3 text-center ${activeTab === 2 ? 'border-b-2 border-blue-600 font-semibold' : uploadComplete ? 'text-blue-600' : 'text-gray-300 cursor-not-allowed'}`}
           disabled={!uploadComplete}
-          onClick={() => { if (uploadComplete) setActiveTab(2); }}
+          onClick={() => { if (uploadComplete) setActiveTab(2);   }}
         >
           Extracted Data
         </button>
@@ -39,30 +53,22 @@ export default function Wizard() {
       {/* Tab Content */}
       <div className="p-6">
         {activeTab === 1 && (
-          <UploadFile onSubmit={
-            (data, imageUrl) => {
-              setFormData(data);
-              handleComplete(data);
-              setUploadedImageUrl(imageUrl); // Assuming data contains imageUrl
-              setActiveTab(2);
-            } 
-          } />
+          <UploadFile onSubmit={handleComplete}
+           />
         )}
 
         {activeTab === 2 && (
           <div>
             <h2 className="text-xl font-semibold mb-4">Extracted Data</h2>
-            {Object.keys(formData).length === 0
-              ? <p className="text-gray-500">No data found.</p>
-              : (
-              <ul className="space-y-2">
-                {Object.entries(formData).map(([key, value]) => (
-                  <li key={key} className="flex justify-between bg-gray-100 p-3 rounded">
-                    <span className="font-medium">{key}</span>
-                    <span>{String(value)}</span>
-                  </li>
-                ))}
-              </ul>)}
+            
+            <ShowData  
+            data={jsonData} 
+            imageUrl={uploadedImageUrl || ""} 
+            fileInfo={{
+              name: "Driving Licence" ,// Use the file name from URL or a default
+              size: 0, // Default value, update if you have the actual file size
+              type: "png" // Set a default type or use the actual type if available
+            }}/>
           </div>
         )}
       </div>

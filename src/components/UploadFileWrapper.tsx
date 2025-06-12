@@ -2,7 +2,7 @@ import React from 'react';
 import UploadFile from './UploadFile';
 
 interface Props {
-  onSubmitSuccess: (data?: any) => void;
+  onSubmitSuccess: ({data,imageUrl,filedata}?: any) => void;
 }
 
 const UploadFileWrapper: React.FC<Props> = ({ onSubmitSuccess }) => {

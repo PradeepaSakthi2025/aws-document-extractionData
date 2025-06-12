@@ -1,0 +1,26 @@
+{
+    "keyValuePairs": {
+        "FIRST_NAME": "GARCIA",
+        "LAST_NAME": "MARIA",
+        "MIDDLE_NAME": "N/A",
+        "SUFFIX": "N/A",
+        "CITY_IN_ADDRESS": "BIGTOWN",
+        "ZIP_CODE_IN_ADDRESS": "02801",
+        "STATE_IN_ADDRESS": "MA",
+        "STATE_NAME": "MASSACHUSETTS",
+        "DOCUMENT_NUMBER": "736HDV7874JSB",
+        "EXPIRATION_DATE": "01/20/2028",
+        "DATE_OF_BIRTH": "03/18/2001",
+        "DATE_OF_ISSUE": "03/18/2018",
+        "ID_TYPE": "DRIVER LICENSE FRONT",
+        "ENDORSEMENTS": "NONE",
+        "VETERAN": "N/A",
+        "RESTRICTIONS": "NONE",
+        "CLASS": "D",
+        "ADDRESS": "100 MARKET STREET",
+        "COUNTY": "N/A",
+        "PLACE_OF_BIRTH": "N/A",
+        "MRZ_CODE": "N/A"
+    },
+    "tables": []
+}
