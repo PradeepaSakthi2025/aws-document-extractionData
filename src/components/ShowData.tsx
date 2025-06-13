@@ -60,7 +60,7 @@ const ShowData: React.FC<ShowDataProps> = ({ data, imageUrl, fileInfo }) => {
       </div>
 
       {/* Extracted Form Data */}
-      <div className="bg-gray-900 p-6 rounded-lg w-full max-w-xl shadow-inner border border-blue-400">
+      <div className="bg-gray-900 p-6 rounded-lg w-full max-w-3xl shadow-inner border border-blue-400">
         <h3 className="text-2xl font-semibold mb-4 border-b pb-2">Extracted Info</h3>
         <div className="space-y-3 text-left text-sm md:text-base">
           <p><strong>Name:</strong> {kv.FIRST_NAME} {kv.MIDDLE_NAME !== "N/A" ? kv.MIDDLE_NAME : ''} {kv.LAST_NAME}</p>
@@ -73,10 +73,8 @@ const ShowData: React.FC<ShowDataProps> = ({ data, imageUrl, fileInfo }) => {
           <p><strong>Endorsements:</strong> {kv.ENDORSEMENTS}</p>
           <p><strong>Restrictions:</strong> {kv.RESTRICTIONS}</p>
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-between mt-10 w-full max-w-xl">
+        {/* Action Buttons */}
+      <div className="flex justify-between mt-10 space-x-4">
         <button
           onClick={handleDownload}
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg"
@@ -91,13 +89,16 @@ const ShowData: React.FC<ShowDataProps> = ({ data, imageUrl, fileInfo }) => {
           Submit
         </button>
       </div>
+      </div>
+
+      
 
       {/* Snackbar Notification */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setOpenSnackbar(false)} severity="success">
           Submitted successfully!
