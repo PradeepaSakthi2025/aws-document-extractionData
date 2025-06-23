@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { FaCheck, FaTimes } from 'react-icons/fa';
-import jsonData from '../dummyData.json'
+import React, { useEffect, useState } from "react";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import jsonData from "../dummyData.json";
 
 interface UploadFileProps {
-  onSubmit: ({jsonData, imageUrl}:any) => void;
+  onSubmit: (data: {
+    data: any;
+    imageUrl: string;
+    fileData: File;
+    fileInfo: { name: string; size: number; type: string };
+  }) => void;
+  useApi: boolean;
 }
+
+// 👇 Toggle this to true when backend API is available
+const useApi = false;
 
 const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
   const [file, setFile] = useState<File | null>(null);
@@ -12,12 +21,12 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
- 
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert('File size should be under 5MB');
+        alert("File size should be under 5MB");
         return;
       }
       setFile(file);
@@ -51,33 +60,82 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
     setProgress(0);
   };
 
-  const handleSubmit = () => {
+  // 👇 This simulates calling an actual backend
+  const fetchExtractedDataFromAPI = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // Replace with your real API endpoint
+    const response = await fetch("http://localhost:3000/upload-file", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
+
+    const result = await response.json();
+    return result;
+  };
+
+  const handleSubmit = async () => {
     if (!file || !isUploaded) return;
 
     const imageUrl = URL.createObjectURL(file);
     const fileData = file;
 
-    onSubmit({data: jsonData, imageUrl ,fileData});
-    console.log("File submitted:", file, "Image URL:", imageUrl , fileData);
+    try {
+      if (useApi) {
+        const apiResponse = await fetchExtractedDataFromAPI(file);
+        onSubmit({
+          data: apiResponse,
+          imageUrl,
+          fileData,
+          fileInfo: {
+            name: "",
+            size: 0,
+            type: "",
+          },
+        });
+        console.log("✅ Data from API submitted", apiResponse);
+      } else {
+        onSubmit({
+          data: jsonData,
+          imageUrl,
+          fileData,
+          fileInfo: {
+            name: "",
+            size: 0,
+            type: "",
+          },
+        });
+        console.log("📦 Using dummy JSON data", jsonData);
+      }
+    } catch (error) {
+      console.error("❌ Error during file submission", error);
+      alert("Failed to extract data. Please try again.");
+    }
   };
 
   return (
     <div className="bg-gray-300 flex items-center justify-center p-4 text-white min-h-[80vh]">
       <div className="bg-gray-800 w-full max-w-sm rounded-xl p-6 text-center shadow-5xl">
-        
         {/* Upload Circle */}
         <div className="relative w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-b from-pink-400 to-blue-500 flex items-center justify-center overflow-hidden">
           {isUploaded ? (
-            <span className="text-white text-4xl z-10">
-              {FaCheck({})}
-              
-            </span>
+            <span className="text-white text-4xl z-10">{FaCheck({})}</span>
           ) : (
             <>
               <span className="z-10 font-bold text-white">UPLOADING</span>
               {isUploading && (
-                <div className="absolute bottom-0 left-0 w-full overflow-hidden rounded-full"
-                  style={{ height: "100%", transition: 'height 0.4s ease-in-out' }}>
+                <div
+                  className="absolute bottom-0 left-0 w-full overflow-hidden rounded-full"
+                  style={{
+                    height: "100%",
+                    transition: "height 0.4s ease-in-out",
+                  }}
+                >
                   <svg
                     className="absolute bottom-0 w-full h-full animate-wave"
                     viewBox="0 0 1440 320"
@@ -100,17 +158,18 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
           {isUploaded ? "Upload complete!" : `${progress}% completed `}
         </div>
         <div className="text-sm text-gray-400 mt-2">
-          {isUploading ? "Please wait while we upload your file..." : "Select a file to upload."}
+          {isUploading
+            ? "Please wait while we upload your file..."
+            : "Select a file to upload."}
         </div>
 
-        {/* File Name + Remove Icon */}
+        {/* File Name + Remove */}
         {selectedFile && (
           <div className="mt-4 flex items-center justify-center gap-2 bg-gray-700 px-4 py-2 rounded-full text-sm">
             <span className="truncate max-w-[180px]">{selectedFile.name}</span>
             <button onClick={handleRemove}>
               <span className="text-red-400 hover:text-red-600 text-sm">
                 {FaTimes({})}
-           
               </span>
             </button>
           </div>
@@ -146,7 +205,11 @@ const UploadFile: React.FC<UploadFileProps> = ({ onSubmit }) => {
             disabled={!isUploaded}
             onClick={handleSubmit}
           >
-            {isUploaded ? "Submit" : isUploading ? "Uploading..." : "Upload Image"}
+            {isUploaded
+              ? "Submit"
+              : isUploading
+              ? "Uploading..."
+              : "Upload Image"}
           </button>
         </div>
       </div>

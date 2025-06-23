@@ -1,14 +1,12 @@
-import React from 'react';
-import UploadFile from './UploadFile';
+import React from "react";
+import UploadFile from "./UploadFile";
 
 interface Props {
-  onSubmitSuccess: ({data,imageUrl,filedata}?: any) => void;
+  onSubmitSuccess: ({ data, imageUrl, filedata }?: any) => void;
 }
 
 const UploadFileWrapper: React.FC<Props> = ({ onSubmitSuccess }) => {
-  return (
-    <UploadFile onSubmit={onSubmitSuccess} />
-  );
+  return <UploadFile onSubmit={onSubmitSuccess} useApi={false} />;
 };
 
 export default UploadFileWrapper;
